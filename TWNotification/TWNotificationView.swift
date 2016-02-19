@@ -61,11 +61,14 @@ class TWNotificationView: UIView {
     
     func hide(callback: (()->Void)?) {
         let size = systemLayoutSizeFittingSize(UILayoutFittingCompressedSize)
+        let tx = transform.tx
         let ty = size.height
         notification?.removed = true
+        
+        //transform
         UIView.animateWithDuration(0.4,
             animations: { () -> Void in
-                self.transform = CGAffineTransformMakeTranslation(0, -ty)
+                self.transform = CGAffineTransformMakeTranslation(tx, -ty)
             })
             { (finish) -> Void in
                 self.removeFromSuperview()
@@ -96,6 +99,7 @@ extension TWNotificationView {
     
     
     @IBAction func panGusture(sender: UIPanGestureRecognizer) {
+        if notification?.removed ?? false { return }
         let point = sender.translationInView(self)
         let tx = max(0, point.x)
         debugPrint(point)
@@ -104,10 +108,12 @@ extension TWNotificationView {
         case .Began: break
         case .Changed:
             transform = CGAffineTransformMakeTranslation(tx, 0)
+            alpha = 1 - tx/w
         case .Ended:
             if 0.4 < tx/w {
                 UIView.animateWithDuration(0.4, animations: { () -> Void in
                     self.transform = CGAffineTransformMakeTranslation(w, 0)
+                    self.alpha = 0
                     }) { (finish) -> Void in
                         self.notification?.removed = true
                         self.removeFromSuperview()
@@ -116,12 +122,14 @@ extension TWNotificationView {
             } else {
                 UIView.animateWithDuration(0.4) { () -> Void in
                     self.transform = CGAffineTransformIdentity
+                    self.alpha = 1
                 }
             }
             break
         case .Cancelled,.Failed:
             UIView.animateWithDuration(0.4) { () -> Void in
                 self.transform = CGAffineTransformIdentity
+                self.alpha = 1
             }
         default: break
         }

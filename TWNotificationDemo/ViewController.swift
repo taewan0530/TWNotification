@@ -22,7 +22,7 @@ class ViewController: UIViewController {
 
     
     @IBAction func didTapOpen(sender: AnyObject) {
-        TWNotification.make(nil, title: "App", message: "가나다라", timeAgo: "지금", duration: 100) { () -> Void in
+        TWNotification.make(nil, title: "App", message: "가나다라", timeAgo: "지금", duration: 5) { () -> Void in
             print("tapp!!!!")
         }.show()
     }
