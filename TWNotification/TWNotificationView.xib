@@ -23,8 +23,33 @@
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CPm-Qp-nVS">
-                        <rect key="frame" x="0.0" y="14" width="240" height="70"/>
+                        <rect key="frame" x="0.0" y="10" width="240" height="74"/>
                         <subviews>
+                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nhc-i5-Tkq">
+                                <rect key="frame" x="0.0" y="0.0" width="240" height="74"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="ZBw-wp-w3o">
+                                    <rect key="frame" x="0.0" y="0.0" width="240" height="74"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="now" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oB4-7u-QhM">
+                                            <rect key="frame" x="84" y="30" width="20" height="12"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <gestureRecognizers/>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="oB4-7u-QhM" secondAttribute="trailing" constant="16" id="Tl9-Fv-uEG"/>
+                                    </constraints>
+                                    <connections>
+                                        <outletCollection property="gestureRecognizers" destination="bFd-TR-1xk" appends="YES" id="De0-tY-EXq"/>
+                                    </connections>
+                                </view>
+                                <vibrancyEffect>
+                                    <blurEffect style="dark"/>
+                                </vibrancyEffect>
+                            </visualEffectView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hQF-QW-OaF">
                                 <rect key="frame" x="15" y="28" width="20" height="20"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -40,39 +65,18 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Push Message" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sj7-Vr-dWE">
-                                <rect key="frame" x="45" y="44" width="83" height="15"/>
+                                <rect key="frame" x="45" y="44" width="180" height="15"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nhc-i5-Tkq">
-                                <rect key="frame" x="0.0" y="0.0" width="240" height="70"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="ZBw-wp-w3o">
-                                    <rect key="frame" x="0.0" y="0.0" width="240" height="70"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="now" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oB4-7u-QhM">
-                                            <rect key="frame" x="84" y="30" width="20" height="12"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                    </subviews>
-                                    <gestureRecognizers/>
-                                    <connections>
-                                        <outletCollection property="gestureRecognizers" destination="bFd-TR-1xk" appends="YES" id="De0-tY-EXq"/>
-                                    </connections>
-                                </view>
-                                <vibrancyEffect>
-                                    <blurEffect style="dark"/>
-                                </vibrancyEffect>
-                            </visualEffectView>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Sj7-Vr-dWE" firstAttribute="top" secondItem="X8a-gV-N2s" secondAttribute="bottom" id="5oQ-wa-AWK"/>
                             <constraint firstItem="Sj7-Vr-dWE" firstAttribute="leading" secondItem="X8a-gV-N2s" secondAttribute="leading" id="EZr-Em-VrY"/>
-                            <constraint firstAttribute="bottom" secondItem="Sj7-Vr-dWE" secondAttribute="bottom" constant="11" id="Hvb-6g-sIg"/>
+                            <constraint firstAttribute="bottom" secondItem="Sj7-Vr-dWE" secondAttribute="bottom" constant="15" id="Hvb-6g-sIg"/>
+                            <constraint firstAttribute="trailing" secondItem="Sj7-Vr-dWE" secondAttribute="trailing" constant="15" id="Iay-bL-wOb"/>
                             <constraint firstItem="Nhc-i5-Tkq" firstAttribute="leading" secondItem="CPm-Qp-nVS" secondAttribute="leading" id="Jhh-PG-fcS"/>
                             <constraint firstItem="hQF-QW-OaF" firstAttribute="leading" secondItem="CPm-Qp-nVS" secondAttribute="leading" constant="15" id="K2H-zB-0lP"/>
                             <constraint firstItem="oB4-7u-QhM" firstAttribute="centerY" secondItem="X8a-gV-N2s" secondAttribute="centerY" id="V0R-lb-jPf"/>
