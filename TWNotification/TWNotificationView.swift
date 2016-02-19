@@ -14,6 +14,7 @@ import UIKit
 @IBDesignable
 class TWNotificationView: UIView {
     
+    
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var imageView: UIImageView!
     
@@ -22,8 +23,9 @@ class TWNotificationView: UIView {
     
     @IBOutlet weak var timeAgoLabel: UILabel!
     
-    var didTap: (()->Void)?
+    private var heightConstraint: NSLayoutConstraint!
     
+    var didTap: (()->Void)?
     
     
     var notification: TWNotification? {
@@ -51,7 +53,7 @@ class TWNotificationView: UIView {
     func show() {
         setNeedsLayout()
         layoutIfNeeded()
-        let size = systemLayoutSizeFittingSize(UILayoutFittingCompressedSize)
+        let size = containerView.systemLayoutSizeFittingSize(UILayoutFittingCompressedSize)
         let ty = size.height
         
         transform = CGAffineTransformMakeTranslation(0, -ty)
@@ -66,7 +68,6 @@ class TWNotificationView: UIView {
         let ty = size.height
         notification?.removed = true
         
-        //transform
         UIView.animateWithDuration(0.4,
             animations: { () -> Void in
                 self.transform = CGAffineTransformMakeTranslation(tx, -ty)
@@ -102,34 +103,53 @@ extension TWNotificationView {
     @IBAction func panGusture(sender: UIPanGestureRecognizer) {
         if notification?.removed ?? false { return }
         let point = sender.translationInView(self)
-        let tx = max(0, point.x)
-        let w = CGRectGetWidth(bounds)
+        let ty = point.y
+        let height = CGRectGetHeight(containerView.bounds)
+        
+        guard let superview = self.superview else { return }
+        
         switch sender.state {
         case .Began: break
         case .Changed:
-            transform = CGAffineTransformMakeTranslation(tx, 0)
-//            alpha = min(1, max(0, (1 - tx/w) * 2))
+            if ty + height < height {
+                transform = CGAffineTransformMakeTranslation(0, ty)
+            } else {
+                heightConstraint.constant = ty + height
+            }
         case .Ended:
-            if 0.4 < tx/w {
-                UIView.animateWithDuration(0.4, animations: { () -> Void in
-                    self.transform = CGAffineTransformMakeTranslation(w, 0)
-//                    self.alpha = 0
+            let rate = ty/height
+            if rate < -0.3 ||  2 < rate {
+                if 2 < rate  {
+                    didTap?()
+                }
+                UIView.animateWithDuration(0.3, animations: { () -> Void in
+                    if 2 < rate  {
+                        self.transform = CGAffineTransformMakeTranslation(0, -(ty + height))
+                    } else {
+                        self.transform = CGAffineTransformMakeTranslation(0, -height)
+                    }
+                    
                     }) { (finish) -> Void in
+                       
                         self.notification?.removed = true
                         self.removeFromSuperview()
                         TWNotification.hideNotificationQueue()
                 }
             } else {
-                UIView.animateWithDuration(0.4) { () -> Void in
+                superview.layoutIfNeeded()
+                UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseOut, animations: { () -> Void in
                     self.transform = CGAffineTransformIdentity
-//                    self.alpha = 1
-                }
+                    self.heightConstraint.constant = height
+                    superview.layoutIfNeeded()
+                    }, completion: nil)
             }
             break
         case .Cancelled,.Failed:
+            superview.layoutIfNeeded()
             UIView.animateWithDuration(0.4) { () -> Void in
                 self.transform = CGAffineTransformIdentity
-//                self.alpha = 1
+                self.heightConstraint.constant = height
+                superview.layoutIfNeeded()
             }
         default: break
         }
@@ -142,6 +162,12 @@ private extension TWNotificationView {
     func setupLayout(){
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 4
+        
+        
+        heightConstraint =  NSLayoutConstraint(item: self, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .Height, multiplier: 1, constant: 58)
+        
+        self.addConstraint(heightConstraint)
+        
     }
     
     func setupNib() {

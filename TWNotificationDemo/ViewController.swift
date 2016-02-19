@@ -9,22 +9,24 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
     
     @IBAction func didTapOpen(sender: AnyObject) {
-        TWNotification.make(nil, title: "App", message: "가나다라", timeAgo: "지금", duration: 5) { () -> Void in
-            print("tapp!!!!")
-        }.show()
+        TWNotification.make(nil, title: "App", message: "가나다라", timeAgo: "지금", duration: 5, willShow: { () -> Void in
+            print("willShow")
+            }) { () -> Void in
+                print("didTap")
+            }.show()
     }
 }
 
