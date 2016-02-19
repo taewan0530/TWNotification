@@ -22,8 +22,8 @@ class TWNotificationView: UIView {
     @IBOutlet weak var timeAgoLabel: UILabel!
     
     var didTap: (()->Void)?
-
-
+    
+    
     
     var notification: TWNotification? {
         didSet {
@@ -71,7 +71,7 @@ class TWNotificationView: UIView {
                 self.removeFromSuperview()
                 callback?()
         }
-
+        
     }
     
     override func intrinsicContentSize() -> CGSize {
@@ -82,14 +82,51 @@ class TWNotificationView: UIView {
         return size
     }
     
+    
+}
+
+
+//MARK: - gesture Recognizer
+extension TWNotificationView {
     @IBAction func didTapView(sender: AnyObject) {
         didTap?()
         hide(nil)
         TWNotification.hideNotificationQueue()
     }
+    
+    
+    @IBAction func panGusture(sender: UIPanGestureRecognizer) {
+        let point = sender.translationInView(self)
+        let tx = max(0, point.x)
+        debugPrint(point)
+        let w = CGRectGetWidth(bounds)
+        switch sender.state {
+        case .Began: break
+        case .Changed:
+            transform = CGAffineTransformMakeTranslation(tx, 0)
+        case .Ended:
+            if 0.4 < tx/w {
+                UIView.animateWithDuration(0.4, animations: { () -> Void in
+                    self.transform = CGAffineTransformMakeTranslation(w, 0)
+                    }) { (finish) -> Void in
+                        self.notification?.removed = true
+                        self.removeFromSuperview()
+                        TWNotification.hideNotificationQueue()
+                }
+            } else {
+                UIView.animateWithDuration(0.4) { () -> Void in
+                    self.transform = CGAffineTransformIdentity
+                }
+            }
+            break
+        case .Cancelled,.Failed:
+            UIView.animateWithDuration(0.4) { () -> Void in
+                self.transform = CGAffineTransformIdentity
+            }
+        default: break
+        }
+    }
 }
-
-
 
 
 //========================================NibDesignable================================================

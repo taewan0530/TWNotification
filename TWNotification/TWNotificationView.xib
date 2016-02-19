@@ -34,6 +34,10 @@
                                     <nil key="highlightedColor"/>
                                 </label>
                             </subviews>
+                            <gestureRecognizers/>
+                            <connections>
+                                <outletCollection property="gestureRecognizers" destination="bFd-TR-1xk" appends="YES" id="De0-tY-EXq"/>
+                            </connections>
                         </view>
                         <vibrancyEffect>
                             <blurEffect style="dark"/>
@@ -89,5 +93,10 @@
                 <action selector="didTapView:" destination="-1" id="YqQ-zO-QPI"/>
             </connections>
         </tapGestureRecognizer>
+        <panGestureRecognizer minimumNumberOfTouches="1" id="bFd-TR-1xk">
+            <connections>
+                <action selector="panGusture:" destination="-1" id="ZAg-KX-mcg"/>
+            </connections>
+        </panGestureRecognizer>
     </objects>
 </document>
