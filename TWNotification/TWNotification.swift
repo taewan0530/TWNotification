@@ -27,12 +27,13 @@ public class TWNotification: NSObject {
     var title: String?
     var message: String?
     var timeAgo: String?
+    var willShow: (()->Void)?
     var callback: (()->Void)?
     var duration: Double = 2.0
     
     var removed = false
     
-    public class func make(image: UIImage?, title: String?, message: String?, timeAgo: String?, duration: Double = 2, callback: (()->Void)?) -> TWNotification {
+    public class func make(image: UIImage?, title: String?, message: String?, timeAgo: String?, duration: Double = 2, willShow: (()->Void)? = nil, callback: (()->Void)? = nil) -> TWNotification {
         let toast = TWNotification()
         toast.image = image
         toast.title = title
@@ -93,6 +94,7 @@ extension TWNotification {
             window.addConstraints(visualConstraints)
             window.addConstraint( NSLayoutConstraint(item: notificationView, attribute: .Top, relatedBy: .Equal, toItem: window, attribute: .Top, multiplier: 1, constant: 0))
             
+            notification.willShow?()
             notificationView.notification = notification
             notificationView.show()
             
