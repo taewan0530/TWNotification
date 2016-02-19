@@ -8,6 +8,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TWNotificationView" customModule="TWPushNotification" customModuleProvider="target">
             <connections>
+                <outlet property="containerView" destination="eov-dt-9BM" id="g6N-r7-Px5"/>
                 <outlet property="imageView" destination="hQF-QW-OaF" id="gOn-Zs-XmY"/>
                 <outlet property="messageLabel" destination="Sj7-Vr-dWE" id="Li5-Lt-P5z"/>
                 <outlet property="timeAgoLabel" destination="oB4-7u-QhM" id="3AH-qD-Wl4"/>

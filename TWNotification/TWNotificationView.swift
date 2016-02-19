@@ -14,6 +14,7 @@ import UIKit
 @IBDesignable
 class TWNotificationView: UIView {
     
+    @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var imageView: UIImageView!
     
     @IBOutlet weak var titleLabel: UILabel!
@@ -107,12 +108,12 @@ extension TWNotificationView {
         case .Began: break
         case .Changed:
             transform = CGAffineTransformMakeTranslation(tx, 0)
-            alpha = 1 - tx/w
+//            alpha = min(1, max(0, (1 - tx/w) * 2))
         case .Ended:
             if 0.4 < tx/w {
                 UIView.animateWithDuration(0.4, animations: { () -> Void in
                     self.transform = CGAffineTransformMakeTranslation(w, 0)
-                    self.alpha = 0
+//                    self.alpha = 0
                     }) { (finish) -> Void in
                         self.notification?.removed = true
                         self.removeFromSuperview()
@@ -121,14 +122,14 @@ extension TWNotificationView {
             } else {
                 UIView.animateWithDuration(0.4) { () -> Void in
                     self.transform = CGAffineTransformIdentity
-                    self.alpha = 1
+//                    self.alpha = 1
                 }
             }
             break
         case .Cancelled,.Failed:
             UIView.animateWithDuration(0.4) { () -> Void in
                 self.transform = CGAffineTransformIdentity
-                self.alpha = 1
+//                self.alpha = 1
             }
         default: break
         }
