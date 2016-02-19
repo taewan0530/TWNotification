@@ -102,7 +102,6 @@ extension TWNotificationView {
         if notification?.removed ?? false { return }
         let point = sender.translationInView(self)
         let tx = max(0, point.x)
-        debugPrint(point)
         let w = CGRectGetWidth(bounds)
         switch sender.state {
         case .Began: break
