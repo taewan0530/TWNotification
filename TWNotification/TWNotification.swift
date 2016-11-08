@@ -10,7 +10,7 @@ import Foundation
 
 import UIKit
 
-public class TWNotification: NSObject {
+open class TWNotification: NSObject {
     static var _notificationView: TWNotificationView?
     static var notificationView: TWNotificationView {
         if _notificationView == nil {
@@ -19,9 +19,9 @@ public class TWNotification: NSObject {
         return _notificationView!
     }
     
-    private static var currentNotification: TWNotification?
-    private static var queue = [TWNotification]()
-    private static var using = false
+    fileprivate static var currentNotification: TWNotification?
+    fileprivate static var queue = [TWNotification]()
+    fileprivate static var using = false
     
     var image: UIImage?
     var title: String?
@@ -33,24 +33,25 @@ public class TWNotification: NSObject {
     
     var removed = false
     
-    public class func make(image: UIImage?, title: String?, message: String?, timeAgo: String?, duration: Double = 2, willShow: (()->Void)? = nil, callback: (()->Void)? = nil) -> TWNotification {
+    open class func make(_ image: UIImage?, title: String?, message: String?, timeAgo: String?, duration: Double = 2, willShow: (()->Void)? = nil, callback: (()->Void)? = nil) -> TWNotification {
         let toast = TWNotification()
         toast.image = image
         toast.title = title
         toast.message = message
         toast.timeAgo = timeAgo
         toast.duration = duration
+        toast.willShow = willShow
         toast.callback = callback
         return toast
     }
     
-    public func show(){
+    open func show(){
         TWNotification.queue.append(self)
         TWNotification.showNotificationQueue()
     }
     
     
-    public class func clearAll(){
+    open class func clearAll(){
         queue.removeAll()
         currentNotification = nil
         if let notificationView = _notificationView {
@@ -83,24 +84,24 @@ extension TWNotification {
         
     }
     
-    class func showToWindow(notification: TWNotification, callback: (()->Void)){
-        if let window = UIApplication.sharedApplication().windows.last {
+    class func showToWindow(_ notification: TWNotification, callback: @escaping (()->Void)){
+        if let window = UIApplication.shared.windows.last {
             window.addSubview(notificationView)
             notificationView.translatesAutoresizingMaskIntoConstraints = false
             
             let bindings = ["view": notificationView]
-            let visualConstraints = NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options:NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: bindings)
+            let visualConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[view]|", options:NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: bindings)
             
             window.addConstraints(visualConstraints)
-            window.addConstraint( NSLayoutConstraint(item: notificationView, attribute: .Top, relatedBy: .Equal, toItem: window, attribute: .Top, multiplier: 1, constant: 0))
+            window.addConstraint( NSLayoutConstraint(item: notificationView, attribute: .top, relatedBy: .equal, toItem: window, attribute: .top, multiplier: 1, constant: 0))
             
             notification.willShow?()
             notificationView.notification = notification
             notificationView.show()
             
             
-            let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(notification.duration * Double(NSEC_PER_SEC)))
-            dispatch_after(delayTime, dispatch_get_main_queue()) {
+            let delayTime = DispatchTime.now() + Double(Int64(notification.duration * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+            DispatchQueue.main.asyncAfter(deadline: delayTime) {
                 if !notification.removed {
                     notificationView.hide(callback)
                 }

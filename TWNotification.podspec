@@ -1,4 +1,4 @@
-@version = "0.0.7"
+@version = "1.0.0"
 Pod::Spec.new do |s|
   s.name         = 'TWNotification'
   s.version      = @version

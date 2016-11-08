@@ -21,7 +21,7 @@ class ViewController: UIViewController {
     }
     
     
-    @IBAction func didTapOpen(sender: AnyObject) {
+    @IBAction func didTapOpen(_ sender: AnyObject) {
         TWNotification.make(nil, title: "App", message: "가나다라", timeAgo: "지금", duration: 5, willShow: { () -> Void in
             print("willShow")
             }) { () -> Void in

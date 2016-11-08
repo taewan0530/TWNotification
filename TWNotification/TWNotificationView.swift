@@ -23,7 +23,7 @@ class TWNotificationView: UIView {
     
     @IBOutlet weak var timeAgoLabel: UILabel!
     
-    private var heightConstraint: NSLayoutConstraint!
+    fileprivate var heightConstraint: NSLayoutConstraint!
     
     var didTap: (()->Void)?
     
@@ -53,34 +53,34 @@ class TWNotificationView: UIView {
     func show() {
         setNeedsLayout()
         layoutIfNeeded()
-        let size = containerView.systemLayoutSizeFittingSize(UILayoutFittingCompressedSize)
+        let size = containerView.systemLayoutSizeFitting(UILayoutFittingCompressedSize)
         let ty = size.height
         
-        transform = CGAffineTransformMakeTranslation(0, -ty)
-        UIView.animateWithDuration(0.5) { () -> Void in
-            self.transform = CGAffineTransformIdentity
-        }
+        transform = CGAffineTransform(translationX: 0, y: -ty)
+        UIView.animate(withDuration: 0.5, animations: { () -> Void in
+            self.transform = CGAffineTransform.identity
+        }) 
     }
     
-    func hide(callback: (()->Void)?) {
-        let size = systemLayoutSizeFittingSize(UILayoutFittingCompressedSize)
+    func hide(_ callback: (()->Void)?) {
+        let size = systemLayoutSizeFitting(UILayoutFittingCompressedSize)
         let tx = transform.tx
         let ty = size.height
         notification?.removed = true
         
-        UIView.animateWithDuration(0.4,
+        UIView.animate(withDuration: 0.4,
             animations: { () -> Void in
-                self.transform = CGAffineTransformMakeTranslation(tx, -ty)
-            })
-            { (finish) -> Void in
+                self.transform = CGAffineTransform(translationX: tx, y: -ty)
+            }, completion: { (finish) -> Void in
                 self.removeFromSuperview()
                 callback?()
-        }
+        })
+            
         
     }
     
-    override func intrinsicContentSize() -> CGSize {
-        var size = super.intrinsicContentSize()
+    override var intrinsicContentSize : CGSize {
+        var size = super.intrinsicContentSize
         
         size.height = max(58, size.height)
         
@@ -93,64 +93,64 @@ class TWNotificationView: UIView {
 
 //MARK: - gesture Recognizer
 extension TWNotificationView {
-    @IBAction func didTapView(sender: AnyObject) {
+    @IBAction func didTapView(_ sender: AnyObject) {
         didTap?()
         hide(nil)
         TWNotification.hideNotificationQueue()
     }
     
     
-    @IBAction func panGusture(sender: UIPanGestureRecognizer) {
+    @IBAction func panGusture(_ sender: UIPanGestureRecognizer) {
         if notification?.removed ?? false { return }
-        let point = sender.translationInView(self)
+        let point = sender.translation(in: self)
         let ty = point.y
-        let height = CGRectGetHeight(containerView.bounds)
+        let height = containerView.bounds.height
         
         guard let superview = self.superview else { return }
         
         switch sender.state {
-        case .Began: break
-        case .Changed:
+        case .began: break
+        case .changed:
             if ty + height < height {
-                transform = CGAffineTransformMakeTranslation(0, ty)
+                transform = CGAffineTransform(translationX: 0, y: ty)
             } else {
                 heightConstraint.constant = ty + height
             }
-        case .Ended:
+        case .ended:
             let rate = ty/height
             if rate < -0.3 ||  2 < rate {
                 if 2 < rate  {
                     didTap?()
                 }
-                UIView.animateWithDuration(0.3, animations: { () -> Void in
+                UIView.animate(withDuration: 0.3, animations: { () -> Void in
                     if 2 < rate  {
-                        self.transform = CGAffineTransformMakeTranslation(0, -(ty + height))
+                        self.transform = CGAffineTransform(translationX: 0, y: -(ty + height))
                     } else {
-                        self.transform = CGAffineTransformMakeTranslation(0, -height)
+                        self.transform = CGAffineTransform(translationX: 0, y: -height)
                     }
                     
-                    }) { (finish) -> Void in
+                    }, completion: { (finish) -> Void in
                        
                         self.notification?.removed = true
                         self.removeFromSuperview()
                         TWNotification.hideNotificationQueue()
-                }
+                }) 
             } else {
                 superview.layoutIfNeeded()
-                UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseOut, animations: { () -> Void in
-                    self.transform = CGAffineTransformIdentity
+                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: { () -> Void in
+                    self.transform = CGAffineTransform.identity
                     self.heightConstraint.constant = height
                     superview.layoutIfNeeded()
                     }, completion: nil)
             }
             break
-        case .Cancelled,.Failed:
+        case .cancelled,.failed:
             superview.layoutIfNeeded()
-            UIView.animateWithDuration(0.4) { () -> Void in
-                self.transform = CGAffineTransformIdentity
+            UIView.animate(withDuration: 0.4, animations: { () -> Void in
+                self.transform = CGAffineTransform.identity
                 self.heightConstraint.constant = height
                 superview.layoutIfNeeded()
-            }
+            }) 
         default: break
         }
     }
@@ -164,30 +164,30 @@ private extension TWNotificationView {
         imageView.layer.cornerRadius = 4
         
         
-        heightConstraint =  NSLayoutConstraint(item: self, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .Height, multiplier: 1, constant: 58)
+        heightConstraint =  NSLayoutConstraint(item: self, attribute: .height, relatedBy: .greaterThanOrEqual, toItem: nil, attribute: .height, multiplier: 1, constant: 58)
         
         self.addConstraint(heightConstraint)
         
     }
     
     func setupNib() {
-        self.backgroundColor = UIColor.clearColor()
+        self.backgroundColor = UIColor.clear
         let view = self.loadNib()
         self.addSubview(view)
         view.translatesAutoresizingMaskIntoConstraints = false
         let bindings = ["view": view]
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options:NSLayoutFormatOptions(rawValue: 0), metrics:nil, views: bindings))
-        self.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options:NSLayoutFormatOptions(rawValue: 0), metrics:nil, views: bindings))
+        self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[view]|", options:NSLayoutFormatOptions(rawValue: 0), metrics:nil, views: bindings))
+        self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[view]|", options:NSLayoutFormatOptions(rawValue: 0), metrics:nil, views: bindings))
     }
 }
 
 private extension UIView {
     func loadNib() -> UIView {
-        let bundle = NSBundle(forClass: self.dynamicType)
+        let bundle = Bundle(for: type(of: self))
         let nib = UINib(nibName: self.nibName(), bundle: bundle)
-        return nib.instantiateWithOwner(self, options: nil)[0] as! UIView
+        return nib.instantiate(withOwner: self, options: nil)[0] as! UIView
     }
     func nibName() -> String {
-        return self.dynamicType.description().componentsSeparatedByString(".").last!
+        return type(of: self).description().components(separatedBy: ".").last!
     }
 }
